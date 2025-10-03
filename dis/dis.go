@@ -1,12 +1,12 @@
-package rss
+package dis
 
 import "fmt"
 
-type RssConf struct {
+type DiscordConf struct {
 	Enable bool
 }
 
-func Publish(article string, conf RssConf) {
+func Publish(article string, conf DiscordConf) {
 	fmt.Print(parse(article))
 }
 

@@ -1,12 +1,12 @@
-package rss
+package mchimp
 
 import "fmt"
 
-type RssConf struct {
+type MchimpConf struct {
 	Enable bool
 }
 
-func Publish(article string, conf RssConf) {
+func Publish(article string, conf MchimpConf) {
 	fmt.Print(parse(article))
 }
 

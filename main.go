@@ -5,12 +5,18 @@ import (
 	"log"
 	"os"
 
+	"github.com/arbormoss/newsletter-forest/dis"
+	"github.com/arbormoss/newsletter-forest/mchimp"
 	"github.com/arbormoss/newsletter-forest/rss"
+	"github.com/arbormoss/newsletter-forest/twt"
 	yml "github.com/goccy/go-yaml"
 )
 
 type Config struct {
-	Rss bool
+	Rss     rss.RssConf
+	Mchimp  mchimp.MchimpConf
+	Twitter twt.TwitterConf
+	Discord dis.DiscordConf
 }
 
 const DEFAULT_CONF = "./conf.yaml"
@@ -22,7 +28,10 @@ func main() {
 
 	// read config from yaml
 	conf := Config{
-		Rss: false,
+		Rss:     rss.RssConf{},
+		Mchimp:  mchimp.MchimpConf{},
+		Twitter: twt.TwitterConf{},
+		Discord: dis.DiscordConf{},
 	}
 	confContents, err := os.ReadFile(*confPath)
 	if err != nil {
@@ -42,7 +51,16 @@ func main() {
 		log.Fatal("Failed to read article contents: Does it exist?")
 	}
 
-	if conf.Rss {
-		rss.Publish(string(articleContents))
+	if conf.Rss.Enable {
+		rss.Publish(string(articleContents), conf.Rss)
+	}
+	if conf.Twitter.Enable {
+		twt.Publish(string(articleContents), conf.Twitter)
+	}
+	if conf.Mchimp.Enable {
+		mchimp.Publish(string(articleContents), conf.Mchimp)
+	}
+	if conf.Discord.Enable {
+		dis.Publish(string(articleContents), conf.Discord)
 	}
 }

@@ -1,12 +1,12 @@
-package rss
+package twt
 
 import "fmt"
 
-type RssConf struct {
+type TwitterConf struct {
 	Enable bool
 }
 
-func Publish(article string, conf RssConf) {
+func Publish(article string, conf TwitterConf) {
 	fmt.Print(parse(article))
 }
 
