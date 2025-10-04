@@ -42,7 +42,10 @@ func main() {
 	}
 
 	args := flag.Args()
-	if len(args) != 1 {
+	if len(args) < 1 {
+		log.Fatal("Not enough arguments: Use '-h' for help")
+	}
+	if len(args) > 1 {
 		log.Fatal("Too many arguments: Use '-h' for help")
 	}
 
