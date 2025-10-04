@@ -66,7 +66,6 @@ func Publish(article string, conf TwitterConf) error {
 
 	_, err = managetweet.Create(context.Background(), c, p)
 	if err != nil {
-		fmt.Println(err.Error())
 		return ErrorTwtTweetCreate
 	}
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -35,10 +36,10 @@ func main() {
 	}
 	confContents, err := os.ReadFile(*confPath)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to read configuration file.")
 	}
 	if err := yml.Unmarshal(confContents, &conf); err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to parse configuration file.")
 	}
 
 	args := flag.Args()
@@ -51,7 +52,7 @@ func main() {
 
 	articleContents, err := os.ReadFile(args[0])
 	if err != nil {
-		log.Fatal("Failed to read article contents: Does it exist?")
+		log.Fatal("Failed to read article contents: Does the article file exist?")
 	}
 
 	if conf.Rss.Enable {
@@ -59,14 +60,19 @@ func main() {
 	}
 	if conf.Twitter.Enable {
 		if err = twt.Publish(string(articleContents), conf.Twitter); err != nil {
-			log.Fatal(err)
+			fmt.Print("Failed to publish to Twt")
+			fmt.Print(err)
 		}
-
+		fmt.Print("Published to Twt")
 	}
 	if conf.Mchimp.Enable {
 		mchimp.Publish(string(articleContents), conf.Mchimp)
 	}
 	if conf.Discord.Enable {
-		dis.Publish(string(articleContents), conf.Discord)
+		if err = dis.Publish(string(articleContents), conf.Discord); err != nil {
+			fmt.Print("Failed to publish to Discord")
+			fmt.Print(err)
+		}
+		fmt.Print("Published to Discord")
 	}
 }
