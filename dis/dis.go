@@ -28,6 +28,8 @@ func Publish(article string, conf DiscordConf) error {
 		return ErrorDiscordSession
 	}
 
+	// images need to be parsed as seperate messages because discord does
+	// not nicely allow inline images
 	for _, img := range parseImages(article) {
 		session.ChannelMessageSend(conf.Channel, img)
 	}
@@ -41,6 +43,9 @@ func Publish(article string, conf DiscordConf) error {
 	return nil
 }
 
+// discord has it's own md support but is missing a lot
+// of features. This parses in checkboxes and removes images.
+// The images have to be sent as seperate messages.
 func parse(article string) string {
 	article = removeImages(article)
 	article = parseCheckboxes(article)

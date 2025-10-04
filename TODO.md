@@ -12,4 +12,5 @@
 - [ ] ACM site (Zola?)
 - [ ] X/Twitter
 - [X] Discord bot
-  - [ ] Images and better Markdown support
+  - [X] Images and better Markdown support
+  - [ ] Inline images
