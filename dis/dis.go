@@ -2,6 +2,7 @@ package dis
 
 import (
 	"fmt"
+	"regexp"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -14,7 +15,7 @@ type DiscordConf struct {
 
 var (
 	ErrorDiscordSession  = fmt.Errorf("Error: Failed to open discord session")
-	ErrorDiscordShutdown = fmt.Errorf("Error: Failed gracefull discord shutdown")
+	ErrorDiscordShutdown = fmt.Errorf("Error: Failed graceful discord shutdown")
 )
 
 func Publish(article string, conf DiscordConf) error {
@@ -27,6 +28,9 @@ func Publish(article string, conf DiscordConf) error {
 		return ErrorDiscordSession
 	}
 
+	for _, img := range parseImages(article) {
+		session.ChannelMessageSend(conf.Channel, img)
+	}
 	session.ChannelMessageSend(conf.Channel, parse(article))
 
 	err = session.Close()
@@ -38,5 +42,36 @@ func Publish(article string, conf DiscordConf) error {
 }
 
 func parse(article string) string {
+	article = removeImages(article)
+	article = parseCheckboxes(article)
+
 	return article
+}
+
+func parseImages(md string) []string {
+	regex := regexp.MustCompile(`!\[(.*?)\]\((.*?)\)`)
+	images := regex.FindAllString(md, -1)
+
+	for i, img := range images {
+		images[i] = regex.ReplaceAllString(img, `[$1]($2)`)
+	}
+
+	return images
+}
+
+func removeImages(md string) string {
+	regex := regexp.MustCompile(`!\[(.*?)\]\((.*?)\)`)
+	md = regex.ReplaceAllString(md, ``)
+
+	return md
+}
+
+func parseCheckboxes(md string) string {
+	regex := regexp.MustCompile(`- \[(x|X|\\|/)\]\s(.*)`)
+	md = regex.ReplaceAllString(md, "- :white_check_mark: $2")
+
+	regex = regexp.MustCompile(`- \[ \]\s(.*)`)
+	md = regex.ReplaceAllString(md, "- :negative_squared_cross_mark: $1")
+
+	return md
 }
