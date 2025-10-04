@@ -2,6 +2,6 @@
 
 ## Discord
 
-- [x] ([Discord Markdown](https://www.markdownguide.org/tools/discord/))
-- [ ] Images
-- [ ] Todo bullets
+- [x] [Discord Markdown](https://www.markdownguide.org/tools/discord/)
+- [x] Images
+- [x] Todo bullets
