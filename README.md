@@ -10,3 +10,7 @@ See [Contributing](CONTRIBUTING.md).
 ## UNDER CONSTRUCTION
 
 See [TODO](TODO.md).
+
+## Markdown Support by Platform
+
+See [MD_SUPPORT](MD_SUPPORT.md).
