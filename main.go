@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/arbormoss/newsletter-forest/dis"
@@ -36,28 +35,38 @@ func main() {
 	}
 	confContents, err := os.ReadFile(*confPath)
 	if err != nil {
-		log.Fatal("Failed to read configuration file.")
+		fmt.Print("Failed to read configuration file.")
+		return
 	}
 	if err := yml.Unmarshal(confContents, &conf); err != nil {
-		log.Fatal("Failed to parse configuration file.")
+		fmt.Print("Failed to parse configuration file.")
+		return
 	}
 
 	args := flag.Args()
 	if len(args) < 1 {
-		log.Fatal("Not enough arguments: Use '-h' for help")
+		fmt.Print("Not enough arguments: Use '-h' for help")
+		return
 	}
 	if len(args) > 1 {
-		log.Fatal("Too many arguments: Use '-h' for help")
+		fmt.Print("Too many arguments: Use '-h' for help")
+		return
 	}
 
 	articleContents, err := os.ReadFile(args[0])
 	if err != nil {
-		log.Fatal("Failed to read article contents: Does the article file exist?")
+		fmt.Print("Failed to read article contents: Does the article file exist?")
+		return
 	}
 
 	if conf.Rss.Enable {
-		rss.Publish(string(articleContents), conf.Rss)
+		if err = rss.Publish(string(articleContents), conf.Rss); err != nil {
+			fmt.Print("Failed to publish to RSS")
+			fmt.Print(err)
+		}
+		fmt.Print("Published to RSS")
 	}
+
 	if conf.Twitter.Enable {
 		if err = twt.Publish(string(articleContents), conf.Twitter); err != nil {
 			fmt.Print("Failed to publish to Twt")
@@ -65,9 +74,15 @@ func main() {
 		}
 		fmt.Print("Published to Twt")
 	}
+
 	if conf.Mchimp.Enable {
-		mchimp.Publish(string(articleContents), conf.Mchimp)
+		if err = mchimp.Publish(string(articleContents), conf.Mchimp); err != nil {
+			fmt.Print("Failed to publish to MailChimp")
+			fmt.Print(err)
+		}
+		fmt.Print("Published to MailChimp")
 	}
+
 	if conf.Discord.Enable {
 		if err = dis.Publish(string(articleContents), conf.Discord); err != nil {
 			fmt.Print("Failed to publish to Discord")
