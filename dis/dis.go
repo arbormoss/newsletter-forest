@@ -2,8 +2,8 @@ package dis
 
 import (
 	"fmt"
-	"regexp"
 
+	"github.com/arbormoss/newsletter-forest/markdown"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -49,29 +49,24 @@ func parse(article string) string {
 }
 
 func parseImages(md string) []string {
-	regex := regexp.MustCompile(`!\[(.*?)\]\((.*?)\)`)
-	images := regex.FindAllString(md, -1)
+	images := markdown.Image.FindAllString(md, -1)
 
 	for i, img := range images {
-		images[i] = regex.ReplaceAllString(img, `[$1]($2)`)
+		images[i] = markdown.Image.ReplaceAllString(img, `[$1]($2)`)
 	}
 
 	return images
 }
 
 func removeImages(md string) string {
-	regex := regexp.MustCompile(`!\[(.*?)\]\((.*?)\)`)
-	md = regex.ReplaceAllString(md, ``)
+	md = markdown.Image.ReplaceAllString(md, ``)
 
 	return md
 }
 
 func parseCheckboxes(md string) string {
-	regex := regexp.MustCompile(`- \[(x|X|\\|/)\]\s(.*)`)
-	md = regex.ReplaceAllString(md, "- :white_check_mark: $2")
-
-	regex = regexp.MustCompile(`- \[ \]\s(.*)`)
-	md = regex.ReplaceAllString(md, "- :negative_squared_cross_mark: $1")
+	md = markdown.CheckmarkDone.ReplaceAllString(md, "- :white_check_mark: $2")
+	md = markdown.CheckmarkEmpty.ReplaceAllString(md, "- :negative_squared_cross_mark: $1")
 
 	return md
 }
