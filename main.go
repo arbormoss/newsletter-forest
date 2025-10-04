@@ -55,7 +55,10 @@ func main() {
 		rss.Publish(string(articleContents), conf.Rss)
 	}
 	if conf.Twitter.Enable {
-		twt.Publish(string(articleContents), conf.Twitter)
+		if err = twt.Publish(string(articleContents), conf.Twitter); err != nil {
+			log.Fatal(err)
+		}
+
 	}
 	if conf.Mchimp.Enable {
 		mchimp.Publish(string(articleContents), conf.Mchimp)

@@ -65,7 +65,6 @@ func parseImages(md string) []string {
 
 func removeImages(md string) string {
 	md = markdown.Image.ReplaceAllString(md, ``)
-
 	return md
 }
 
