@@ -2,6 +2,8 @@ package mchimp
 
 import (
 	"fmt"
+
+	"github.com/arbormoss/newsletter-forest/markdown"
 )
 
 type MchimpConf struct {
@@ -47,5 +49,5 @@ func Publish(article string, conf MchimpConf) error {
 
 // todo, parse md to html
 func parse(article string) string {
-	return article
+	return markdown.ParseMdToHtml(article)
 }
