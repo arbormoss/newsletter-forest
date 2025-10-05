@@ -2,68 +2,85 @@ package markdown
 
 import (
 	"regexp"
-	"strconv"
 	"strings"
 )
 
+type MdFormat struct {
+	BoldFormat   string
+	ItalicFormat string
+
+	ImageFormat string
+	LinkFormat  string
+
+	CodeFormat string
+
+	BulletFormat     string
+	BulletListPrefix string
+	BulletListSuffix string
+
+	DoneBulletFormat      string
+	UncheckedBulletFormat string
+
+	HeadingMaker MdHeadingMaker
+}
+
 // this is not fully functional, but has the features i use most
-// parses the md page files into html
-func ParseMdToHtml(md string) string {
+func ParseMdToHtml(md string, format MdFormat) string {
 	// quick check for html characters
 	md = escapeCharacters(md)
 	md = strings.TrimSpace(md)
 
-	md = parseBoldItalics(md)
-	md = parseImages(md)
-	md = parseHeadings(md)
-	md = parseParagraphs(md)
-	md = parseCode(md)
+	md = parseBoldItalics(md, format.BoldFormat, format.ItalicFormat)
+	md = parseImages(md, format.ImageFormat)
+	md = parseHeadings(md, format.HeadingMaker)
+	md = parseCode(md, format.CodeFormat)
 
-	md = parseBullets(md)
+	// TODO: seperate bullet fmt
+	md = parseBullets(md, format.BulletFormat, format.DoneBulletFormat, format.UncheckedBulletFormat, format.BulletListPrefix, format.BulletListSuffix)
 
-	// must be after images
-	md = parseLinks(md)
+	md = parseLinks(md, format.LinkFormat)
 
 	return md
 }
 
 // uses the standard md link for external pages
-func parseLinks(md string) string {
-	md = Link.ReplaceAllString(md, `<a href="$2">$1</a>`)
+func parseLinks(md, format string) string {
+	md = Link.ReplaceAllString(md, format)
 
 	return md
 }
 
-func parseImages(md string) string {
-	md = Image.ReplaceAllString(md, "\n<img src=\"$2\" alt=\"$1\" ><em>$1</em>\n")
+func parseImages(md, format string) string {
+	md = Image.ReplaceAllString(md, format)
 
 	return md
 }
 
-func parseHeadings(md string) string {
+type MdHeadingMaker func(int) string
+
+func parseHeadings(md string, maker MdHeadingMaker) string {
 	for i := 5; i > 0; i-- {
 		regex := regexp.MustCompile(strings.Repeat("#", i) + `\s(.*)`)
-		md = regex.ReplaceAllString(md, "\n<h"+strconv.Itoa(i)+">$1</h"+strconv.Itoa(i)+">\n")
+		md = regex.ReplaceAllString(md, maker(i))
 	}
 
 	return md
 }
 
 // TODO: multi level bullet points
-func parseBullets(md string) string {
-	md = Bullet.ReplaceAllString(md, "<ul><li>$1</li></ul>")
+func parseBullets(md, bulletFmt, doneFmt, uncheckFmt, rmPrefix, rmSuffix string) string {
+	md = CheckmarkDone.ReplaceAllString(md, doneFmt)
+	md = CheckmarkEmpty.ReplaceAllString(md, uncheckFmt)
+	md = Bullet.ReplaceAllString(md, bulletFmt)
+	var BulletFix = regexp.MustCompile(rmSuffix + `\s*` + rmPrefix)
 	md = BulletFix.ReplaceAllString(md, "\n")
 
 	return md
 }
 
-// triple back ticks get a seperate line while single ones are inline
-func parseCode(md string) string {
-	md = Code.ReplaceAllString(md, "<code>$1</code>")
-
-	// ensure consecuteive code blocks do not have added padding
-	md = CodePadding1.ReplaceAllString(md, "\n")
-	md = CodePadding2.ReplaceAllString(md, " ")
+// only supports single tics
+func parseCode(md, format string) string {
+	md = Code.ReplaceAllString(md, format)
 
 	return md
 }
@@ -78,25 +95,12 @@ func escapeCharacters(md string) string {
 	return md
 }
 
-func parseBoldItalics(md string) string {
-	md = Bold1.ReplaceAllString(md, "<strong>$1</strong>")
-	md = Bold2.ReplaceAllString(md, "<strong>$1</strong>")
+func parseBoldItalics(md, boldFormat, italicFormat string) string {
+	md = Bold1.ReplaceAllString(md, boldFormat)
+	md = Bold2.ReplaceAllString(md, boldFormat)
 
-	md = Italic1.ReplaceAllString(md, "<em>$1</em>")
-	md = Italic2.ReplaceAllString(md, "<em>$1</em>")
-
-	return md
-}
-
-func parseParagraphs(md string) string {
-	regex := regexp.MustCompile(`(.)[\f\t\v]*\n[\f\t\v]*(.)`)
-	md = regex.ReplaceAllString(md, "$1$2")
-
-	regex = regexp.MustCompile(`(</h\d>)[\f\t\v]*\n[\s]*(.)`)
-	md = regex.ReplaceAllString(md, "$1$2")
-
-	regex = regexp.MustCompile(`(.)[\f\t\v]*\n([\f\t\v]*\n)+(.)`)
-	md = regex.ReplaceAllString(md, "$1\n\n$3")
+	md = Italic1.ReplaceAllString(md, italicFormat)
+	md = Italic2.ReplaceAllString(md, italicFormat)
 
 	return md
 }

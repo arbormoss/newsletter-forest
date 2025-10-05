@@ -2,6 +2,7 @@ package mchimp
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/arbormoss/newsletter-forest/markdown"
 )
@@ -30,7 +31,21 @@ func Publish(article string, conf MchimpConf) error {
 		return ErrorAudienceId
 	}
 
-	templateId, err := createTemplate(conf.Key, conf.Dc, markdown.ParseMdToHtml(article))
+	content := markdown.ParseMdToHtml(article, markdown.MdFormat{
+		BoldFormat:            "<strong>$1</strong>",
+		ItalicFormat:          "<em>$1</em>",
+		ImageFormat:           "\n<img src=\"$2\" alt=\"$1\" ><em>$1</em>\n",
+		LinkFormat:            `<a href="$2">$1</a>`,
+		CodeFormat:            "<code>$1</code>",
+		BulletFormat:          "<ul><li>$1</li></ul>",
+		BulletListPrefix:      "<ul>",
+		BulletListSuffix:      "</ul>",
+		DoneBulletFormat:      "- \u2705 $2",
+		UncheckedBulletFormat: "- \u274E $1",
+		HeadingMaker:          headingMaker,
+	})
+
+	templateId, err := createTemplate(conf.Key, conf.Dc, content)
 	if err != nil {
 		return ErrorTemplateCreate
 	}
@@ -45,4 +60,8 @@ func Publish(article string, conf MchimpConf) error {
 	}
 
 	return nil
+}
+
+func headingMaker(level int) string {
+	return "\n<h" + strconv.Itoa(level) + ">$1</h" + strconv.Itoa(level) + ">\n"
 }

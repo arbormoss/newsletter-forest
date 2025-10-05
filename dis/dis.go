@@ -2,6 +2,7 @@ package dis
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/arbormoss/newsletter-forest/markdown"
 	"github.com/bwmarrin/discordgo"
@@ -33,7 +34,22 @@ func Publish(article string, conf DiscordConf) error {
 	for _, img := range parseImages(article) {
 		session.ChannelMessageSend(conf.Channel, img)
 	}
-	session.ChannelMessageSend(conf.Channel, parse(article))
+
+	content := markdown.ParseMdToHtml(article, markdown.MdFormat{
+		BoldFormat:            "**$1**",
+		ItalicFormat:          "*$1*",
+		ImageFormat:           "",
+		LinkFormat:            "[$1]($2)\n",
+		CodeFormat:            "`$1`",
+		BulletFormat:          "- $1",
+		BulletListPrefix:      "<ul>",
+		BulletListSuffix:      "</ul>",
+		DoneBulletFormat:      "- \u2705 $2",
+		UncheckedBulletFormat: "- \u274E $1",
+		HeadingMaker:          headingMaker,
+	})
+
+	session.ChannelMessageSend(conf.Channel, content)
 
 	err = session.Close()
 	if err != nil {
@@ -43,16 +59,7 @@ func Publish(article string, conf DiscordConf) error {
 	return nil
 }
 
-// discord has it's own md support but is missing a lot
-// of features. This parses in checkboxes and removes images.
-// The images have to be sent as seperate messages.
-func parse(article string) string {
-	article = removeImages(article)
-	article = parseCheckboxes(article)
-
-	return article
-}
-
+// images must be parsed as sperate messages to support discord md
 func parseImages(md string) []string {
 	images := markdown.Image.FindAllString(md, -1)
 
@@ -63,14 +70,6 @@ func parseImages(md string) []string {
 	return images
 }
 
-func removeImages(md string) string {
-	md = markdown.Image.ReplaceAllString(md, ``)
-	return md
-}
-
-func parseCheckboxes(md string) string {
-	md = markdown.CheckmarkDone.ReplaceAllString(md, "- :white_check_mark: $2")
-	md = markdown.CheckmarkEmpty.ReplaceAllString(md, "- :negative_squared_cross_mark: $1")
-
-	return md
+func headingMaker(level int) string {
+	return strings.Repeat("#", level) + " $1"
 }
