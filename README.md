@@ -46,6 +46,14 @@ twitter:
   tokensecret: "<twitter access token secret>"
   key: "<twitter api key>"
   keysecret: "<twitter api key secret>"
+mchimp:
+  enable: false
+  key: "<mailchimp api key>"
+  audience: "<mailchimp audience name>"
+  dc: "<mailchimp region>" # you can easily find this in your admin dashboard url: https://<region>.admin.mailchimp.com/
+  subject: "<email subject>"
+  from: "<sender name>"
+  replyto: "<sender email>" # this must be a verified email on your mailchimp
 ```
 
 ## Markdown Support by Platform
