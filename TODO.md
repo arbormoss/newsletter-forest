@@ -3,7 +3,7 @@
 ## Feature List
 - [X] Markdown support
   - [ ] Cross-platform image support
-  - [ ] Unified Markdown spec
+  - [X] Unified Markdown spec
 - [X] YAML config
   - [ ] Config doccumentation
 
