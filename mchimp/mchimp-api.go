@@ -58,8 +58,8 @@ func parseAudienceId(json map[string]interface{}, audienceName string) (string, 
 // creates a mailchimp template, which is required to send an email.
 // the template content is just some html that is the body of the email.
 func createTemplate(apiKey, dc, content string) (string, error) {
-	content = strings.ReplaceAll(content, `"`, `\"`)
-	content = strings.ReplaceAll(content, "\n", "<br>")
+	content = escapeReq(content)
+
 	var data = strings.NewReader(`{"name" : "default" , "html" : "<div>` + content + `</div>" }`)
 	req, err := http.NewRequest("POST", "https://"+dc+".api.mailchimp.com/3.0/templates", data)
 	if err != nil {
@@ -92,7 +92,7 @@ func createTemplate(apiKey, dc, content string) (string, error) {
 }
 
 func createCampeign(apiKey, audienceId, subject, previewText, from, replyTo, templateId, dc string) (string, error) {
-	var data = strings.NewReader(`{"type":"regular","recipients":{"list_id":"` + audienceId + `"},"settings":{"subject_line":"` + subject + `","preview_text":"` + previewText + `","title":"` + subject + `","from_name":"` + from + `","reply_to":"` + replyTo + `", "use_conversation":false,"authenticate":false,"auto_footer":false,"inline_css":false,"auto_fb_post":[],"fb_comments":false,"template_id":10001018},"content_type":"template"}`)
+	var data = strings.NewReader(`{"type":"regular","recipients":{"list_id":"` + audienceId + `"},"settings":{"subject_line":"` + subject + `","preview_text":"` + previewText + `","title":"` + subject + `","from_name":"` + from + `","reply_to":"` + replyTo + `", "use_conversation":false,"authenticate":false,"auto_footer":false,"inline_css":false,"auto_fb_post":[],"fb_comments":false,"template_id":` + templateId + `},"content_type":"template"}`)
 	req, err := http.NewRequest("POST", "https://"+dc+".api.mailchimp.com/3.0/campaigns", data)
 	if err != nil {
 		return "", err
@@ -134,4 +134,18 @@ func sendCampeign(apiKey, dc, campeignId string) error {
 
 	resp.Body.Close()
 	return nil
+}
+
+// prep content for sending in http req
+func escapeReq(s string) string {
+	s = strings.ReplaceAll(s, `\`, `\\`)
+	s = strings.ReplaceAll(s, `"`, `\"`)
+	s = strings.ReplaceAll(s, `/`, `\/`)
+	s = strings.ReplaceAll(s, "\b", "")
+	s = strings.ReplaceAll(s, "\f", "")
+	s = strings.ReplaceAll(s, "\r", "<br>")
+	s = strings.ReplaceAll(s, "\t", "  ")
+	s = strings.ReplaceAll(s, "\n", "<br>")
+
+	return s
 }

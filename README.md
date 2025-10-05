@@ -50,7 +50,7 @@ twitter:
 
 ## Markdown Support by Platform
 
-See [MD_SUPPORT](MD_SUPPORT.md).
+See [MD SUPPORT](MD_SUPPORT.md).
 
 ## Contributing
 
