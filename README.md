@@ -17,14 +17,17 @@ See [TODO](TODO.md).
 ### Test
 
 Run either `./test.sh` or run `go test ./...` in the project root to test all go packages.
+This has no additional dependancies other than golang and it's go libraries.
 
 ### Publish
+
+To publish an article just point the program at it.
 
 `./newsletter-forest <md article>`
 
 Flags:
 - `-h`: help
-- `-c`: path to required yaml configuration file (defaults to `./conf.yaml`)
+- `-c`: path to yaml configuration file (required, defaults to `./conf.yaml`)
 
 ### Configuration
 
@@ -38,21 +41,21 @@ Example configuration:
 ---
 discord:
   enable: false
-  channel: "<discord channel id>"
-  token: "<discord announcement bot token>"
-twitter:
+  channel: "<discord channel id>" # get this by enabling dev mode
+  token: "<discord announcement bot token>" # this bot will need to be in the server
+twitter: # the twitter api makes no sense anymore
   enable: false
   token: "<twitter access token>"
-  tokensecret: "<twitter access token secret>"
+  tokensecret: "<twitter access token secret>" # this *should* match what it's called in the dev console
   key: "<twitter api key>"
   keysecret: "<twitter api key secret>"
-mchimp:
+mchimp: # MailChimp
   enable: false
   key: "<mailchimp api key>"
-  audience: "<mailchimp audience name>"
+  audience: "<mailchimp audience name>" # you can find this on your MailChimp dashboard
   dc: "<mailchimp region>" # you can easily find this in your admin dashboard url: https://<region>.admin.mailchimp.com/
   subject: "<email subject>"
-  from: "<sender name>"
+  from: "<sender name>" # a name not an email
   replyto: "<sender email>" # this must be a verified email on your mailchimp
 ```
 
@@ -63,4 +66,8 @@ See [MD SUPPORT](MD_SUPPORT.md).
 ## Contributing
 
 Pull requests are welcome.
-Either open an issue or chat with me before opening one.
+~~Either open an issue or chat with me before opening one.~~
+If you see a problem or a feature you want to add feel free!
+
+Look at [TODO](TODO.md) for a roadmap of features and changes.
+If you find a bug or want to feature request check out the github issues.
