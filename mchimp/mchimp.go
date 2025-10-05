@@ -30,7 +30,7 @@ func Publish(article string, conf MchimpConf) error {
 		return ErrorAudienceId
 	}
 
-	templateId, err := createTemplate(conf.Key, conf.Dc, parse(article))
+	templateId, err := createTemplate(conf.Key, conf.Dc, markdown.ParseMdToHtml(article))
 	if err != nil {
 		return ErrorTemplateCreate
 	}
@@ -45,9 +45,4 @@ func Publish(article string, conf MchimpConf) error {
 	}
 
 	return nil
-}
-
-// todo, parse md to html
-func parse(article string) string {
-	return markdown.ParseMdToHtml(article)
 }

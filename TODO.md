@@ -1,16 +1,18 @@
 # TODO
 
 ## Feature List
-- [ ] Markdown support
+- [X] Markdown support
   - [ ] Cross-platform image support
-- [ ] YAML config
+- [X] YAML config
   - [ ] Config doccumentation
 
 ## Service List
 - [ ] RSS
-- [ ] MailChimp
+- [X] MailChimp
+  - [ ] More robust Markdown parsing
 - [ ] ACM site (Zola?)
-- [ ] X/Twitter
+- [X] X/Twitter
+  - [ ] Styling
 - [X] Discord bot
   - [X] Images and better Markdown support
   - [ ] Inline images

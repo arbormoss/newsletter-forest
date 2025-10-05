@@ -13,3 +13,15 @@ Twitter's styling support is very limited. I do not expect to fully support Mark
 - [x] Todo bullets
 - [ ] Bold
 - [ ] Italics
+
+## MailChimp
+
+- [X] Bold
+- [X] Italics
+- [X] Bullets
+- [X] Images
+- [X] Links
+- [X] Headings
+- [X] Inline code
+  - [ ] Code blocks
+- [ ] Todo bullets

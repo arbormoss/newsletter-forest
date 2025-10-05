@@ -35,7 +35,7 @@ func parseLinks(md string) string {
 }
 
 func parseImages(md string) string {
-	md = Image.ReplaceAllString(md, "\n<img src=\"assets/images/$2\" alt=\"$1\" ><em>$1</em>\n")
+	md = Image.ReplaceAllString(md, "\n<img src=\"$2\" alt=\"$1\" ><em>$1</em>\n")
 
 	return md
 }
@@ -43,7 +43,7 @@ func parseImages(md string) string {
 func parseHeadings(md string) string {
 	for i := 5; i > 0; i-- {
 		regex := regexp.MustCompile(strings.Repeat("#", i) + `\s(.*)`)
-		md = regex.ReplaceAllString(md, "\n<h"+strconv.Itoa(i)+"> $1</h"+strconv.Itoa(i)+">\n")
+		md = regex.ReplaceAllString(md, "\n<h"+strconv.Itoa(i)+">$1</h"+strconv.Itoa(i)+">\n")
 	}
 
 	return md
@@ -51,7 +51,7 @@ func parseHeadings(md string) string {
 
 // TODO: multi level bullet points
 func parseBullets(md string) string {
-	md = Bullet.ReplaceAllString(md, "<ul><li> $1</li></ul>")
+	md = Bullet.ReplaceAllString(md, "<ul><li>$1</li></ul>")
 	md = BulletFix.ReplaceAllString(md, "\n")
 
 	return md

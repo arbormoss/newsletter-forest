@@ -16,7 +16,7 @@ See [TODO](TODO.md).
 
 ### Test
 
-Either run `./test.sh` or run `go test ./...` in the project root to test all go packages.
+Run either `./test.sh` or run `go test ./...` in the project root to test all go packages.
 
 ### Publish
 
@@ -24,7 +24,7 @@ Either run `./test.sh` or run `go test ./...` in the project root to test all go
 
 Flags:
 - `-h`: help
-- `-c`: path to yaml configuration file (defaults to `./conf.yaml`)
+- `-c`: path to required yaml configuration file (defaults to `./conf.yaml`)
 
 ### Configuration
 
