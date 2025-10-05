@@ -1,8 +1,7 @@
 # Markdown Support
 
-As of now there is no unified Markdown standard, and some Md features will break for specific targets.
+Markdown format is standardized for Discord and MailChimp.
 Twitter has almost no styling because I don't want to deal with rich text.
-Discord and MailChimp should support most basic Md features, but are not unified yet or fully tested.
 
 ## Discord
 
@@ -30,3 +29,30 @@ Twitter's styling support is very limited. I do not expect to fully support Mark
 - [X] Inline code
   - [ ] Code blocks
 - [ ] Todo bullets
+
+## Markdown
+
+Bold
+`**<text>**` or `__<text>__`
+
+Italic
+`*<text>*` or `_<text>_`
+
+Image
+`![<alt text>](src)`
+
+Link
+`[<description>](src)`
+
+Bullet Point
+`- <content>`
+
+Checked Todo
+`- [x] <content>`
+
+Unchecked Todo
+`- [ ] <content>`
+
+Inline Code
+*Single back tics around the content.*
+*This won't render because of Github Markdown.*
