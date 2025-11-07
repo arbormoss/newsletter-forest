@@ -3,10 +3,6 @@
 This is a program for distributing a Markdown newsletter to multiple social media feeds.
 It is intended to be used by [ACM UMN](https://acm.umn.edu/) for distributing their newsletter more easily.
 
-## UNDER CONSTRUCTION
-
-See [TODO](TODO.md).
-
 ## Usage
 
 ### Build
@@ -16,8 +12,8 @@ See [TODO](TODO.md).
 
 ### Test
 
-Run either `./test.sh` or run `go test ./...` in the project root to test all go packages.
-This has no additional dependancies other than golang and it's go libraries.
+Run `./test.sh` in the project root to test all go packages.
+This has no additional dependencies other than golang and it's go libraries.
 
 ### Publish
 
@@ -33,7 +29,7 @@ Flags:
 
 To publish an article to a specific target, add it to a yaml config file.
 Make sure to set `enable` to true to enable publishing to the target.
-For most targets, you need to set a token or key of some kind for authenticaiton.
+For most targets, you need to set a token or key of some kind for authentication.
 To enable to disable a target without fully removing it from the configuration, set `enable`.
 
 Example configuration:
@@ -65,9 +61,10 @@ See [MD SUPPORT](MD_SUPPORT.md).
 
 ## Contributing
 
-Pull requests are welcome.
-~~Either open an issue or chat with me before opening one.~~
-If you see a problem or a feature you want to add feel free!
+See [CONTRIBUTING](CONTRIBUTING.md).
 
-Look at [TODO](TODO.md) for a roadmap of features and changes.
-If you find a bug or want to feature request check out the github issues.
+## Licence
+
+[MIT](LICENSE)
+
+[Credits](CREDITS)
