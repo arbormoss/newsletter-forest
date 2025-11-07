@@ -4,3 +4,5 @@ newsletter-forest
 *.sum
 dis/discord_md_test.md
 mchimp/test-api.sh
+flake.lock
+.direnv
