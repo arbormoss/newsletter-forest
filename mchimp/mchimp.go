@@ -23,15 +23,8 @@ var (
 	ErrorTemplateCreate = fmt.Errorf("Failed to create Mailchimp Template")
 	ErrorCampeignCreate = fmt.Errorf("Failed to create Mailchimp Campeign")
 	ErrorCampeignSend   = fmt.Errorf("Failed to send Mailchimp Campeign")
-)
 
-func Publish(article string, conf MchimpConf) error {
-	audienceId, err := audienceIdFromName(conf.Audience, conf.Key, conf.Dc)
-	if err != nil {
-		return ErrorAudienceId
-	}
-
-	content := markdown.ParseMdToHtml(article, markdown.MdFormat{
+	mchimpMdFormat = markdown.MdFormat{
 		BoldFormat:            "<strong>$1</strong>",
 		ItalicFormat:          "<em>$1</em>",
 		ImageFormat:           "\n<img src=\"$2\" alt=\"$1\" ><em>$1</em>\n",
@@ -43,7 +36,19 @@ func Publish(article string, conf MchimpConf) error {
 		DoneBulletFormat:      "- \u2705 $2",
 		UncheckedBulletFormat: "- \u274E $1",
 		HeadingMaker:          headingMaker,
-	})
+	}
+)
+
+func Publish(article string, conf MchimpConf) error {
+	audienceId, err := audienceIdFromName(conf.Audience, conf.Key, conf.Dc)
+	if err != nil {
+		return ErrorAudienceId
+	}
+
+	content, err := markdown.ParseMdToHtml(article, mchimpMdFormat)
+	if err != nil {
+		return err
+	}
 
 	templateId, err := createTemplate(conf.Key, conf.Dc, content)
 	if err != nil {

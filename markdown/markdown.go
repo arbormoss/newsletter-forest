@@ -13,10 +13,29 @@ var (
 
 	Code = regexp.MustCompile("`((.|\n)*?)`")
 
-	Bold1   = regexp.MustCompile(`\*\*(.*?)\*\*`)
-	Bold2   = regexp.MustCompile(`\_\_(.*?)\_\_`)
-	Italic1 = regexp.MustCompile(`\*(.*?)\*`)
-	Italic2 = regexp.MustCompile(`\_(.*?)\_`)
+	Bold1   = regexp.MustCompile(`\*(.*?)\*`)
+	Bold2   = regexp.MustCompile(`\*\*(.*?)\*\*`)
+	Italic1 = regexp.MustCompile(`\_(.*?)\_`)
+	Italic2 = regexp.MustCompile(`\_\_(.*?)\_\_`)
 
 	Bullet = regexp.MustCompile(`-\s(.*)`)
 )
+
+type MdFormat struct {
+	BoldFormat   string
+	ItalicFormat string
+
+	ImageFormat string
+	LinkFormat  string
+
+	CodeFormat string
+
+	BulletFormat     string
+	BulletListPrefix string
+	BulletListSuffix string
+
+	DoneBulletFormat      string
+	UncheckedBulletFormat string
+
+	HeadingMaker MdHeadingMaker
+}
