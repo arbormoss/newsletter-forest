@@ -6,25 +6,6 @@ import (
 	"strings"
 )
 
-type MdFormat struct {
-	BoldFormat   string
-	ItalicFormat string
-
-	ImageFormat string
-	LinkFormat  string
-
-	CodeFormat string
-
-	BulletFormat     string
-	BulletListPrefix string
-	BulletListSuffix string
-
-	DoneBulletFormat      string
-	UncheckedBulletFormat string
-
-	HeadingMaker MdHeadingMaker
-}
-
 var (
 	ErrorMarkdownCodeBlock = fmt.Errorf("Error: Markdown contains code block")
 )
@@ -115,11 +96,11 @@ func unescapeCharacters(md string) string {
 }
 
 func parseBoldItalics(md, boldFormat, italicFormat string) string {
-	md = Bold1.ReplaceAllString(md, boldFormat)
 	md = Bold2.ReplaceAllString(md, boldFormat)
+	md = Bold1.ReplaceAllString(md, boldFormat)
 
-	md = Italic1.ReplaceAllString(md, italicFormat)
 	md = Italic2.ReplaceAllString(md, italicFormat)
+	md = Italic1.ReplaceAllString(md, italicFormat)
 
 	return md
 }
