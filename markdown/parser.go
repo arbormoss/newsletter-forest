@@ -1,6 +1,7 @@
 package markdown
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 )
@@ -24,8 +25,15 @@ type MdFormat struct {
 	HeadingMaker MdHeadingMaker
 }
 
+var (
+	ErrorMarkdownCodeBlock = fmt.Errorf("Error: Markdown contains code block")
+)
+
 // this is not fully functional, but has the features i use most
-func ParseMdToHtml(md string, format MdFormat) string {
+func ParseMdToHtml(md string, format MdFormat) (string, error) {
+	if strings.Contains(md, "```") {
+		return "", ErrorMarkdownCodeBlock
+	}
 	// quick check for html characters
 	md = escapeCharacters(md)
 	md = strings.TrimSpace(md)
@@ -40,7 +48,9 @@ func ParseMdToHtml(md string, format MdFormat) string {
 
 	md = parseLinks(md, format.LinkFormat)
 
-	return md
+	md = unescapeCharacters(md)
+
+	return md, nil
 }
 
 // uses the standard md link for external pages
@@ -92,6 +102,15 @@ func escapeCharacters(md string) string {
 	md = strings.ReplaceAll(md, ">", "&gt;")
 	md = strings.ReplaceAll(md, "\"", "&quot;")
 	md = strings.ReplaceAll(md, "'", "&#39;")
+	return md
+}
+
+func unescapeCharacters(md string) string {
+	md = strings.ReplaceAll(md, "&amp;", "&")
+	md = strings.ReplaceAll(md, "&lt;", "<")
+	md = strings.ReplaceAll(md, "&gt;", ">")
+	md = strings.ReplaceAll(md, "&quot;", "\"")
+	md = strings.ReplaceAll(md, "&#39;", "'")
 	return md
 }
 
