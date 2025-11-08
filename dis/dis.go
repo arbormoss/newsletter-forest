@@ -17,6 +17,20 @@ type DiscordConf struct {
 var (
 	ErrorDiscordSession  = fmt.Errorf("Error: Failed to open discord session")
 	ErrorDiscordShutdown = fmt.Errorf("Error: Failed graceful discord shutdown")
+
+	discordMdFormat = markdown.MdFormat{
+		BoldFormat:            "**$1**",
+		ItalicFormat:          "*$1*",
+		ImageFormat:           "",
+		LinkFormat:            "[$1]($2)\n",
+		CodeFormat:            "`$1`",
+		BulletFormat:          "- $1",
+		BulletListPrefix:      "<ul>",
+		BulletListSuffix:      "</ul>",
+		DoneBulletFormat:      "- \u2705 $2",
+		UncheckedBulletFormat: "- \u274E $1",
+		HeadingMaker:          headingMaker,
+	}
 )
 
 func Publish(article string, conf DiscordConf) error {
@@ -29,25 +43,16 @@ func Publish(article string, conf DiscordConf) error {
 		return ErrorDiscordSession
 	}
 
-	// images need to be parsed as seperate messages because discord does
+	// images need to be parsed as separate messages because discord does
 	// not nicely allow inline images
 	for _, img := range parseImages(article) {
 		session.ChannelMessageSend(conf.Channel, img)
 	}
 
-	content := markdown.ParseMdToHtml(article, markdown.MdFormat{
-		BoldFormat:            "**$1**",
-		ItalicFormat:          "*$1*",
-		ImageFormat:           "",
-		LinkFormat:            "[$1]($2)\n",
-		CodeFormat:            "`$1`",
-		BulletFormat:          "- $1",
-		BulletListPrefix:      "<ul>",
-		BulletListSuffix:      "</ul>",
-		DoneBulletFormat:      "- \u2705 $2",
-		UncheckedBulletFormat: "- \u274E $1",
-		HeadingMaker:          headingMaker,
-	})
+	content, err := markdown.ParseMdToHtml(article, discordMdFormat)
+	if err != nil {
+		return err
+	}
 
 	session.ChannelMessageSend(conf.Channel, content)
 
@@ -59,7 +64,7 @@ func Publish(article string, conf DiscordConf) error {
 	return nil
 }
 
-// images must be parsed as sperate messages to support discord md
+// images must be parsed as separate messages to support discord md
 func parseImages(md string) []string {
 	images := markdown.Image.FindAllString(md, -1)
 
